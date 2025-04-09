@@ -1,0 +1,14 @@
+name: MiniGamePl
+version: 1.0
+author: PalaPika
+main: fr.palapika.minigame.MiniGame
+api-version: 1.16
+commands:
+  joingame:
+    description: Permet au joueur de rejoindre le jeu si il n'est pas en cours
+    usage: /command
+    aliases: join
+  start:
+    description: Permet de lancer le jeu
+    usage: /command
+    aliases: joingame
