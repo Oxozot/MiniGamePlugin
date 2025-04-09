@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MiniGamePlugin:jar">
+    <output-path>$PROJECT_DIR$/../../Serveur minecraft 1.16.5 dev/plugins</output-path>
+    <root id="archive" name="MiniGamePlugin.jar">
+      <element id="module-output" name="MiniGamePlugin" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Serveur minecraft 1.16.5 dev/server-1.16.5.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

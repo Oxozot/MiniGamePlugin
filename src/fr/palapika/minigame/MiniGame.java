@@ -4,10 +4,11 @@ import fr.palapika.minigame.commands.JoinGameCommand;
 import fr.palapika.minigame.commands.StartCommand;
 import fr.palapika.minigame.manager.DamageListeners;
 import fr.palapika.minigame.manager.MiniGameListeners;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
@@ -19,7 +20,11 @@ import java.util.List;
 
 public class MiniGame extends JavaPlugin {
 
+    public World world = Bukkit.getWorld("world");
+    public Location spawnLocation = new Location(world, 0.5, world.getHighestBlockYAt(0, 0)+1d, 0.5);
+
     public List<Player> players = new ArrayList<>();
+    public List<Player> deadPlayers = new ArrayList<>();
 
     public List<Cow> cowTerrorist = new ArrayList<>();
 
@@ -55,16 +60,28 @@ public class MiniGame extends JavaPlugin {
     public List<Player> getPlayers(){
         return players;
     }
+
+    public List<Player> getDeadPlayers(){
+        return deadPlayers;
+    }
+
     public List<Cow> getCows(){
         return cowTerrorist;
     }
 
-    public ItemStack getItem(Material material, String name ){
+    public ItemStack getItem(Material material, String name , boolean enchantEffect){
         ItemStack item = new ItemStack(material, 1);
         ItemMeta itemM = item.getItemMeta();
         itemM.setDisplayName(name);
-        item.setItemMeta(itemM);
-        return item;
+        if (enchantEffect){
+            itemM.addEnchant(Enchantment.IMPALING, 1, true);
+            itemM.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            item.setItemMeta(itemM);
+            return item;
+        }else {
+            item.setItemMeta(itemM);
+            return item;
+        }
     }
 
     public void killAndClearCows() {

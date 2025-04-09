@@ -26,6 +26,7 @@ public class DamageListeners implements Listener {
                 if (player.getHealth() <= event.getDamage()){
                     event.setDamage(0);
                     main.getPlayers().remove(player);
+                    main.getDeadPlayers().add(player);
 
                     player.setGameMode(GameMode.SPECTATOR);
 /*

@@ -40,10 +40,10 @@ public class MiniGameGameCycle extends BukkitRunnable {
 
         for (Player player: main.getPlayers()){
             if (player.getHealth() != 0 && timer == 30){
-                player.getInventory().setItem( 2, main.getItem(Material.FEATHER, ChatColor.GREEN + "Jump Boost"));
+                player.getInventory().setItem( 2, main.getItem(Material.FEATHER, ChatColor.GREEN + "Jump Boost", true));
                 player.updateInventory();
             } else if (player.getHealth() != 0 && timer == 45){
-                player.getInventory().setItem( 2, main.getItem(Material.YELLOW_DYE, ChatColor.GREEN + "Speed Boost"));
+                player.getInventory().setItem( 2, main.getItem(Material.YELLOW_DYE, ChatColor.GREEN + "Speed Boost", true));
                 player.updateInventory();
             }
         }
@@ -51,6 +51,7 @@ public class MiniGameGameCycle extends BukkitRunnable {
         if (main.getPlayers().isEmpty()) {
             main.killAndClearCows();
             main.setState(GameStates.FINISH);
+            MiniGameFinishCycle finish = new MiniGameFinishCycle(main);
             cancel();
         }
 
