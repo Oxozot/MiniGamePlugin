@@ -12,3 +12,7 @@ commands:
     description: Permet de lancer le jeu
     usage: /command
     aliases: joingame
+  colorgameinit:
+    description: Permet d'initialiser colorGame
+    usage: /command
+    permission: minigame.colorgameinit

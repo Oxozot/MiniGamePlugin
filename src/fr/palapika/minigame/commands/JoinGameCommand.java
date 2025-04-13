@@ -2,12 +2,15 @@ package fr.palapika.minigame.commands;
 
 import fr.palapika.minigame.GameStates;
 import fr.palapika.minigame.MiniGame;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 public class JoinGameCommand implements CommandExecutor {
 
@@ -24,21 +27,14 @@ public class JoinGameCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "You have to be a player to execute this command");
         } else {
             Player player = (Player) sender;
-            if (cmd.getName().equalsIgnoreCase("joingame")){
-                if (!main.isState(GameStates.WAITING)){
-                    player.sendMessage(ChatColor.RED + "Le jeu a deja commence! Veuillez attendre la fin de la partie");
-                    return true;
-                }
-
-                if (main.getPlayers().contains(player)){
-                    player.sendMessage(ChatColor.RED + "Vous etes deja parmi les joueurs!");
-                } else {
-                    main.getPlayers().add(player);
-                    player.setGameMode(GameMode.ADVENTURE);
-                    player.sendMessage(ChatColor.GREEN + "Vous avez bien rejoins le jeu");
-                    player.sendTitle(ChatColor.GREEN + "Vous avez bien rejoins le jeu", null,1, 40, 1);
-                }
+            Inventory gameSelectorInv = Bukkit.createInventory(null, 3 * 9, "§dGameSelector");
+            for (int i=0; i < 27; i++){
+                gameSelectorInv.setItem(i, main.getItem(Material.BLACK_STAINED_GLASS_PANE, " ", false));
             }
+            gameSelectorInv.setItem(10, main.getItem(Material.TNT, "§5Vache explosive", false));
+            gameSelectorInv.setItem(12, main.getItem(Material.LIGHT_BLUE_WOOL, "§6Color Game", true));
+
+            player.openInventory(gameSelectorInv);
 
         }
 
