@@ -29,10 +29,10 @@ public class JoinGameCommand implements CommandExecutor {
             Player player = (Player) sender;
             Inventory gameSelectorInv = Bukkit.createInventory(null, 3 * 9, "§dGameSelector");
             for (int i=0; i < 27; i++){
-                gameSelectorInv.setItem(i, main.getItem(Material.BLACK_STAINED_GLASS_PANE, " ", false));
+                gameSelectorInv.setItem(i, main.getItem(Material.BLACK_STAINED_GLASS_PANE, " ", false,1));
             }
-            gameSelectorInv.setItem(10, main.getItem(Material.TNT, "§5Vache explosive", false));
-            gameSelectorInv.setItem(12, main.getItem(Material.LIGHT_BLUE_WOOL, "§6Color Game", true));
+            gameSelectorInv.setItem(10, main.getItem(Material.TNT, "§5Vache explosive", false,1));
+            gameSelectorInv.setItem(12, main.getItem(Material.LIGHT_BLUE_WOOL, "§6Color Game", true,1));
 
             player.openInventory(gameSelectorInv);
 

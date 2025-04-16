@@ -74,20 +74,21 @@ public class MiniGameGameCycle extends BukkitRunnable {
 
         for (Player player: main.getPlayers()){
             player.setLevel(timer);
+
             if (timer == 15){
-                player.getInventory().addItem( main.getItem(Material.YELLOW_DYE, "§aSpeed Boost", true));
+                player.getInventory().addItem( main.getItem(Material.YELLOW_DYE, "§aSpeed Boost", true,1));
                 player.updateInventory();
             }
             if (timer == 30){
-                player.getInventory().addItem( main.getItem(Material.FEATHER, "§aJump Boost", true));
+                player.getInventory().addItem( main.getItem(Material.FEATHER, "§aJump Boost", true,1));
                 player.updateInventory();
             } else if (timer == 45){
 
                 player.sendTitle(ChatColor.LIGHT_PURPLE + "Bataille Final !", null,0, 20, 0);
 
-                player.getInventory().addItem( main.getItem(Material.YELLOW_DYE, "§aSpeed Boost", true));
+                player.getInventory().addItem( main.getItem(Material.YELLOW_DYE, "§aSpeed Boost", true,1));
                 // baton knockback 5
-                ItemStack batonKnockback = main.getItem(Material.STICK, "§aBaton repousseur de Puant", true);
+                ItemStack batonKnockback = main.getItem(Material.STICK, "§aBaton repousseur de Puant", true,1);
                 ItemMeta bKnM = batonKnockback.getItemMeta();
                 bKnM.addEnchant(Enchantment.KNOCKBACK, 5, true);
                 batonKnockback.setItemMeta(bKnM);

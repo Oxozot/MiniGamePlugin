@@ -25,8 +25,14 @@ public class DamageListeners implements Listener {
             if (main.getPlayers().contains(player)){
                 if (player.getHealth() <= event.getDamage()){
                     event.setDamage(0);
-                    main.getPlayers().remove(player);
-                    main.getDeadPlayers().add(player);
+                    if (main.getPlayers().contains(player)){
+                        main.getPlayers().remove(player);
+                        main.getDeadPlayers().add(player);
+                    } else if (main.getColorGamePlayers().contains(player)){
+                        main.getColorGamePlayers().remove(player);
+                        main.getColorGameDeadPlayers().add(player);
+                    }
+
 
                     player.setGameMode(GameMode.SPECTATOR);
 /*

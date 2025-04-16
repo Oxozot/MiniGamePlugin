@@ -16,3 +16,9 @@ commands:
     description: Permet d'initialiser colorGame
     usage: /command
     permission: minigame.colorgameinit
+  circle:
+    description: Permet de creer un cercle de block sous le joueur cible
+    usage: /command
+  broadcast:
+    description: Permet de ...
+    usage: /command

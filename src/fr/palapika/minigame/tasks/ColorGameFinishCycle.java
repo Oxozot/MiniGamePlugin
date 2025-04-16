@@ -1,26 +1,26 @@
 package fr.palapika.minigame.tasks;
 
 import fr.palapika.minigame.GameStates;
+import fr.palapika.minigame.GameStatesColorGame;
 import fr.palapika.minigame.MiniGame;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class MiniGameFinishCycle extends BukkitRunnable {
+public class ColorGameFinishCycle extends BukkitRunnable {
 
     private MiniGame main;
 
-    public MiniGameFinishCycle(MiniGame main) {
+    public ColorGameFinishCycle(MiniGame main) {
         this.main = main;
     }
 
     @Override
     public void run() {
 
-        if (main.isState(GameStates.FINISH)){
-            main.getServer().dispatchCommand(main.getServer().getConsoleSender(), "kill @e[type=!minecraft:player]");
-            for (Player deadPlayer: main.getDeadPlayers()){
+        if (main.isColorGameState(GameStatesColorGame.FINISH)){
+            for (Player deadPlayer: main.getColorGamePlayers()){
                 deadPlayer.teleport(main.spawnLocation);
                 deadPlayer.setGameMode(GameMode.ADVENTURE);
                 deadPlayer.getInventory().clear();
@@ -29,7 +29,7 @@ public class MiniGameFinishCycle extends BukkitRunnable {
                 deadPlayer.setFoodLevel(20);
                 deadPlayer.getInventory().addItem(main.getItem(Material.COMPASS, "§dGameSelector", true, 1));
             }
-            main.setState(GameStates.WAITING);
+            main.setColorGameState(GameStatesColorGame.WAITING);
         }
 
     }

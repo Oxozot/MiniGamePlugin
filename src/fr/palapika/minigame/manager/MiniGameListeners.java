@@ -43,7 +43,7 @@ public class MiniGameListeners implements Listener {
         player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 0, false, false, false));
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999, 3, false, false, false));
 
-        player.getInventory().addItem(main.getItem(Material.COMPASS, "§dGameSelector", true));
+        player.getInventory().addItem(main.getItem(Material.COMPASS, "§dGameSelector", true,1));
 
     }
 
@@ -54,6 +54,10 @@ public class MiniGameListeners implements Listener {
             main.getPlayers().remove(player);
         } else if (main.getDeadPlayers().contains(player)) {
             main.getDeadPlayers().remove(player);
+        } else if (main.getColorGamePlayers().contains(player)) {
+            main.getColorGamePlayers().remove(player);
+        } else if (main.getColorGameDeadPlayers().contains(player)) {
+            main.getColorGameDeadPlayers().remove(player);
         }
     }
 
@@ -68,10 +72,10 @@ public class MiniGameListeners implements Listener {
 
             Inventory gameSelectorInv = Bukkit.createInventory(null, 3 * 9, "§dGameSelector");
             for (int i=0; i < 27; i++){
-                gameSelectorInv.setItem(i, main.getItem(Material.BLACK_STAINED_GLASS_PANE, " ", false));
+                gameSelectorInv.setItem(i, main.getItem(Material.BLACK_STAINED_GLASS_PANE, " ", false,1));
             }
-            gameSelectorInv.setItem(10, main.getItem(Material.TNT, "§5Vache explosive", false));
-            gameSelectorInv.setItem(12, main.getItem(Material.LIGHT_BLUE_WOOL, "§6Color Game", true));
+            gameSelectorInv.setItem(10, main.getItem(Material.TNT, "§5Vache explosive", false,1));
+            gameSelectorInv.setItem(12, main.getItem(Material.LIGHT_BLUE_WOOL, "§6Color Game", true,1));
 
             player.openInventory(gameSelectorInv);
         }

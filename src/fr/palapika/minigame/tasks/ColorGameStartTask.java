@@ -32,11 +32,11 @@ public class ColorGameStartTask extends BukkitRunnable {
     public void run() {
 
 
-        for (int i=x1; i<=x2; i++){
-            for (int j=z1; j<z2; j++){
+        for (int i=x1; i<=x2; i+=3){
+            for (int j=z1; j<z2; j+=3){
                 Location blockLoc = new Location(main.world, i, 200, j);
                 int colorBlockIndex = (int)(Math.random() * main.getColorsWool().size());
-                Bukkit.getServer().getWorld("world").getBlockAt(blockLoc).setType(main.getColorsWool().get(colorBlockIndex));
+                main.create3x3Block(blockLoc, main.getColorsWool().get(colorBlockIndex));
             }
         }
 
@@ -48,19 +48,21 @@ public class ColorGameStartTask extends BukkitRunnable {
 
 
         if (timer == 0){
+            int colorBlockIndex = (int)(Math.random() * main.getColorsWool().size());
             Bukkit.broadcastMessage(ChatColor.GREEN + "Lancement du Jeu !");
             main.setColorGameState(GameStatesColorGame.PLAYING);
             for (Player player: main.getColorGamePlayers()){
                 player.sendTitle(ChatColor.GREEN + "Lancement du Jeu !", null,0, 20, 0);
                 player.teleport(gameSpawn);
-                int colorBlockIndex = (int)(Math.random() * main.getColorsWool().size());
-                player.getInventory().setItem(4, main.getItem(main.getColorsWool().get(colorBlockIndex), "", false));
+                player.getInventory().setItem(4, main.getItem(main.getColorsWool().get(colorBlockIndex), "", false, 1));
             }
             ColorGameCycle cycle = new ColorGameCycle(main);
             cycle.runTaskTimer(main, 0, 20);
             cancel();
         }
         timer--;
+
+
     }
 
 }
