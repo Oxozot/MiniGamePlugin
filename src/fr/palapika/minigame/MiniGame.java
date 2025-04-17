@@ -5,6 +5,7 @@ import fr.palapika.minigame.manager.DamageListeners;
 import fr.palapika.minigame.manager.MiniGameListeners;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -17,14 +18,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class MiniGame extends JavaPlugin {
-
-    private File file = new File(this.getDataFolder(), "data.yml");
-
-    private FileConfiguration config = new YamlConfiguration();
 
 
     public World world = Bukkit.getWorld("world");
@@ -42,6 +42,10 @@ public class MiniGame extends JavaPlugin {
     public List<Material> colorsWool = new ArrayList<>();
 
 
+    private FileConfiguration dataConfig = null;
+    private File configFile = null;
+
+
 
     private GameStates state;
     private GameStatesColorGame colorGameState;
@@ -52,13 +56,10 @@ public class MiniGame extends JavaPlugin {
         setState(GameStates.WAITING);
         setColorGameState(GameStatesColorGame.WAITING);
 
-        config.set("message", "message dans la config");
-        try {
-            config.save(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        saveDefaultConfig();
 
+        getConfig().set("message", "message de la config");
+        saveConfig();
 
         getCommand("joingame").setExecutor(new JoinGameCommand(this));
         getCommand("start").setExecutor(new StartCommand(this));
@@ -182,5 +183,43 @@ public class MiniGame extends JavaPlugin {
 
     }
 
+    public void reloadConfig(){
+        if (this.configFile == null)
+            this.configFile = new File(this.getDataFolder(), "data.yml");
+
+        this.dataConfig = YamlConfiguration.loadConfiguration(this.configFile);
+
+        InputStream defaultStream = this.getResource("data.yml");
+        if (defaultStream != null){
+            YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultStream));
+            this.dataConfig.setDefaults(defaultConfig);
+        }
+    }
+
+    public FileConfiguration getConfig(){
+        if (this.dataConfig == null)
+            reloadConfig();
+
+        return this.dataConfig;
+    }
+
+    public void saveConfig(){
+        if (this.dataConfig ==null || this.configFile == null) return;
+
+        try {
+            this.getConfig().save(this.configFile);
+        } catch (IOException e) {
+            this.getLogger().log(Level.SEVERE, "Could not save config to " + this.configFile, e);
+        }
+    }
+
+    public void saveDefaultConfig(){
+        if (this.configFile == null)
+            this.configFile = new File(this.getDataFolder(), "data.yml");
+
+        if (!this.configFile.exists()){
+            this.saveResource("data.yml", false);
+        }
+    }
 
 }

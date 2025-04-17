@@ -6,8 +6,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Objects;
-
 public class BroadcastCMD implements CommandExecutor {
 
     private MiniGame main;
@@ -19,9 +17,8 @@ public class BroadcastCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        if (cmd.getName().equalsIgnoreCase("broadcast")){
+        if (main.getConfig().contains("message")){
             Bukkit.broadcastMessage(main.getConfig().getString("message"));
-            return true;
         }
 
         return true;
