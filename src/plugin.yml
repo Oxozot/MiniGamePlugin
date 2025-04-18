@@ -22,3 +22,6 @@ commands:
   broadcast:
     description: Permet de ...
     usage: /command
+  territory:
+    description: Permet de ...
+    usage: /command

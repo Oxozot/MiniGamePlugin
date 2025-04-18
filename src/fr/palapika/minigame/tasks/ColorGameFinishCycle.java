@@ -4,6 +4,7 @@ import fr.palapika.minigame.GameStates;
 import fr.palapika.minigame.GameStatesColorGame;
 import fr.palapika.minigame.MiniGame;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,9 +20,11 @@ public class ColorGameFinishCycle extends BukkitRunnable {
     @Override
     public void run() {
 
+        Location spawnLocation = new Location(main.world, main.getConfig().getDouble("message.x"), main.getConfig().getDouble("message.y"), main.getConfig().getDouble("message.z"));
+
         if (main.isColorGameState(GameStatesColorGame.FINISH)){
             for (Player deadPlayer: main.getColorGamePlayers()){
-                deadPlayer.teleport(main.spawnLocation);
+                deadPlayer.teleport(spawnLocation);
                 deadPlayer.setGameMode(GameMode.ADVENTURE);
                 deadPlayer.getInventory().clear();
                 deadPlayer.setLevel(0);

@@ -28,10 +28,10 @@ public class MiniGame extends JavaPlugin {
 
 
     public World world = Bukkit.getWorld("world");
-    public Location spawnLocation = new Location(world, 4, 201+1d, 4);
 
     public Location spawnTntGameLoc = new Location(world, 4, 206, 4);
     public Location spawnColorGameLoc = new Location(world, 4, 210, 4);
+    public Location spawnTerritoryGameLoc = new Location(world, 4, 214, 4);
 
 // tntGame
     public List<Player> players = new ArrayList<>();
@@ -40,6 +40,9 @@ public class MiniGame extends JavaPlugin {
     public List<Player> colorGamePlayers = new ArrayList<>();
     public List<Player> colorGameDeadPlayers = new ArrayList<>();
     public List<Material> colorsWool = new ArrayList<>();
+    // tntGame
+    public List<Player> territoryGamePlayers = new ArrayList<>();
+    public List<Player> territoryGameDeadPlayers = new ArrayList<>();
 
 
     private FileConfiguration dataConfig = null;
@@ -49,16 +52,23 @@ public class MiniGame extends JavaPlugin {
 
     private GameStates state;
     private GameStatesColorGame colorGameState;
+    private GameStatesTerritoryGame territoryGamestate;
 
     @Override
     public void onEnable(){
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "le serv va bien");
         setState(GameStates.WAITING);
         setColorGameState(GameStatesColorGame.WAITING);
+        setTerritoryGameState(GameStatesTerritoryGame.WAITING);
 
         saveDefaultConfig();
 
+
+
         getConfig().set("message", "message de la config");
+        getConfig().set("spawn.x", 5);
+        getConfig().set("spawn.y", 202);
+        getConfig().set("spawn.z", 5);
         saveConfig();
 
         getCommand("joingame").setExecutor(new JoinGameCommand(this));
@@ -66,6 +76,7 @@ public class MiniGame extends JavaPlugin {
         getCommand("colorgameinit").setExecutor(new ColorGameInitCmd(this));
         getCommand("circle").setExecutor(new CircleCmd(this));
         getCommand("broadcast").setExecutor(new BroadcastCMD(this));
+        getCommand("territory").setExecutor(new TerritoryCMD(this));
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents( new MiniGameListeners(this), this);
@@ -115,7 +126,22 @@ public class MiniGame extends JavaPlugin {
     public List<Material> getColorsWool(){
         return colorsWool;
     }
+    // territoryGame
+    public void setTerritoryGameState(GameStatesTerritoryGame state){
+        this.territoryGamestate = state;
+    }
 
+    public boolean isTerritoryGameState(GameStatesTerritoryGame state){
+        return this.territoryGamestate == state;
+    }
+
+    public List<Player> getTerritoryGamePlayers(){
+        return territoryGamePlayers;
+    }
+
+    public List<Player> getTerritoryGameDeadPlayers(){
+        return territoryGameDeadPlayers;
+    }
 
 
 

@@ -17,8 +17,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collections;
 
 public class MiniGameListeners implements Listener {
 
@@ -34,7 +37,10 @@ public class MiniGameListeners implements Listener {
 
         Player player = event.getPlayer();
 
-        player.teleport(main.spawnLocation);
+        Location spawnLocation = new Location(main.world, main.getConfig().getDouble("spawn.x"), main.getConfig().getInt("spawn.y"), main.getConfig().getDouble("spawn.z"));
+        //Location spawnLocation = new Location(main.world, 5, 202, 5);
+
+        player.teleport(spawnLocation);
         player.getInventory().clear();
         player.setLevel(0);
         player.setHealth(20d);
@@ -104,6 +110,25 @@ public class MiniGameListeners implements Listener {
                         break;
                     }
                 }
+            }
+            if (item.getItemMeta().getDisplayName().equals("§5Territory Selector") && item.getType() == Material.BLAZE_ROD){
+
+                int xBlock = event.getClickedBlock().getX();
+                int yBlock = event.getClickedBlock().getY();
+                int zBlock = event.getClickedBlock().getZ();
+
+                player.sendMessage("Territoire selectionne en: x= " + xBlock + " y= " + yBlock + " z= " + zBlock);
+                main.getConfig().set("player." + player.getUniqueId().toString() + ".territory.x", xBlock);
+                main.getConfig().set("player." + player.getUniqueId().toString() + ".territory.y", yBlock);
+                main.getConfig().set("player." + player.getUniqueId().toString() + ".territory.z", zBlock);
+
+                ItemMeta itemM = item.getItemMeta();
+                itemM.setLore(Collections.singletonList("x: " + xBlock + " y: " + yBlock + " z:" + zBlock));
+                item.setItemMeta(itemM);
+
+                player.getInventory().setItem(player.getInventory().getHeldItemSlot(), item);
+
+                main.saveConfig();
             }
         }
 
