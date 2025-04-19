@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +44,14 @@ public class MiniGame extends JavaPlugin {
     // tntGame
     public List<Player> territoryGamePlayers = new ArrayList<>();
     public List<Player> territoryGameDeadPlayers = new ArrayList<>();
+    private int defaultTroops = 2500;
+    private int defaultAttaquePourcent = 20;
+    private int defaultGold = 0;
+
+    public int troops;
+    public int attaquePourcent;
+    public int gold;
+
 
 
     private FileConfiguration dataConfig = null;
@@ -69,7 +78,14 @@ public class MiniGame extends JavaPlugin {
         getConfig().set("spawn.x", 5);
         getConfig().set("spawn.y", 202);
         getConfig().set("spawn.z", 5);
+        getConfig().set("territoryGame.troops", defaultTroops);
+        getConfig().set("territoryGame.attaquePourcent", defaultAttaquePourcent);
+        getConfig().set("territoryGame.gold", defaultGold);
         saveConfig();
+
+        troops = getConfig().getInt("territoryGame.troops");
+        attaquePourcent = getConfig().getInt("territoryGame.attaquePourcent");
+        gold = getConfig().getInt("territoryGame.gold");
 
         getCommand("joingame").setExecutor(new JoinGameCommand(this));
         getCommand("start").setExecutor(new StartCommand(this));
@@ -246,6 +262,23 @@ public class MiniGame extends JavaPlugin {
         if (!this.configFile.exists()){
             this.saveResource("data.yml", false);
         }
+    }
+
+    public void createScoreboardTerritoryManager(Player player, int gold, int troops, int attaquePourcent, String team){
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective("TerritoryManager", "dummy", "§d§lTerritory Manager");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        Score teamScore = objective.getScore(ChatColor.GREEN + "§lTeam: " + team);
+        teamScore.setScore(4);
+        Score goldScore = objective.getScore(ChatColor.GOLD + "Gold: " + gold);
+        goldScore.setScore(3);
+        Score troopsScore = objective.getScore( ChatColor.AQUA + "Troupes: " + troops);
+        troopsScore.setScore(2);
+        Score attaqueP100Score = objective.getScore( ChatColor.AQUA + "Pourcentage d'attaque: " + attaquePourcent + "%");
+        attaqueP100Score.setScore(1);
+
+        player.setScoreboard(scoreboard);
     }
 
 }

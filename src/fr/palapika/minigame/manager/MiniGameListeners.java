@@ -2,9 +2,11 @@ package fr.palapika.minigame.manager;
 
 import fr.palapika.minigame.GameStates;
 import fr.palapika.minigame.GameStatesColorGame;
+import fr.palapika.minigame.GameStatesTerritoryGame;
 import fr.palapika.minigame.MiniGame;
 import fr.palapika.minigame.tasks.ColorGameStartTask;
 import fr.palapika.minigame.tasks.MiniGameStartTask;
+import fr.palapika.minigame.tasks.TerritoryGameStartTask;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -65,6 +67,8 @@ public class MiniGameListeners implements Listener {
         } else if (main.getColorGameDeadPlayers().contains(player)) {
             main.getColorGameDeadPlayers().remove(player);
         }
+        main.getTerritoryGamePlayers().remove(player);
+        main.getTerritoryGameDeadPlayers().remove(player);
     }
 
     @EventHandler
@@ -81,7 +85,8 @@ public class MiniGameListeners implements Listener {
                 gameSelectorInv.setItem(i, main.getItem(Material.BLACK_STAINED_GLASS_PANE, " ", false,1));
             }
             gameSelectorInv.setItem(10, main.getItem(Material.TNT, "§5Vache explosive", false,1));
-            gameSelectorInv.setItem(12, main.getItem(Material.LIGHT_BLUE_WOOL, "§6Color Game", true,1));
+            gameSelectorInv.setItem(13, main.getItem(Material.LIGHT_BLUE_WOOL, "§6Color Game", true,1));
+            gameSelectorInv.setItem(16, main.getItem(Material.BLAZE_ROD, "§5OpenFront", true,1));
 
             player.openInventory(gameSelectorInv);
         }
@@ -154,6 +159,16 @@ public class MiniGameListeners implements Listener {
                     }
 
                 }
+                if (player.getLocation().getY() == 213){
+                    if (!main.isTerritoryGameState(GameStatesTerritoryGame.WAITING)){
+                        player.sendMessage(ChatColor.RED + "Le jeu a deja commence! Veuillez attendre la fin de la partie");
+                    }else {
+                        TerritoryGameStartTask TerritoryGameStartTask = new TerritoryGameStartTask(main);
+                        TerritoryGameStartTask.runTaskTimer(main, 0, 20);
+                        main.setTerritoryGameState(GameStatesTerritoryGame.STARTING);
+                    }
+
+                }
             }
         }
 
@@ -211,6 +226,26 @@ public class MiniGameListeners implements Listener {
                     player.closeInventory();
                     player.teleport(main.spawnColorGameLoc);
                 }
+            }
+            if (current.getType() == Material.BLAZE_ROD && current.getItemMeta().getDisplayName().equals("§5OpenFront")){
+                if (!main.isTerritoryGameState(GameStatesTerritoryGame.WAITING)){
+                    player.sendMessage(ChatColor.RED + "Le jeu a deja commence! Veuillez attendre la fin de la partie");
+                }
+
+                if (main.getTerritoryGamePlayers().contains(player)){
+                    player.sendMessage(ChatColor.RED + "Vous etes deja parmi les joueurs!");
+                    event.setCancelled(true);
+                    player.closeInventory();
+                } else if (main.getTerritoryGamePlayers().size() < 8){
+                    main.getTerritoryGamePlayers().add(player);
+                    player.setGameMode(GameMode.ADVENTURE);
+                    player.sendMessage(ChatColor.GREEN + "Vous avez bien rejoins le jeu <" + main.getTerritoryGamePlayers().size() + "/8>");
+                    player.sendTitle(ChatColor.GREEN + "Vous avez bien rejoins le jeu", null,1, 40, 1);
+                    event.setCancelled(true);
+                    player.getInventory().clear();
+                    player.closeInventory();
+                    player.teleport(main.spawnTerritoryGameLoc);
+                } else player.sendMessage(ChatColor.RED + "Le jeu est plein!");
             }
         }
 
