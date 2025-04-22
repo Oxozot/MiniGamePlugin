@@ -32,7 +32,8 @@ public class JoinGameCommand implements CommandExecutor {
                 gameSelectorInv.setItem(i, main.getItem(Material.BLACK_STAINED_GLASS_PANE, " ", false,1));
             }
             gameSelectorInv.setItem(10, main.getItem(Material.TNT, "§5Vache explosive", false,1));
-            gameSelectorInv.setItem(12, main.getItem(Material.LIGHT_BLUE_WOOL, "§6Color Game", true,1));
+            gameSelectorInv.setItem(13, main.getItem(Material.LIGHT_BLUE_WOOL, "§6Color Game", true,1));
+            gameSelectorInv.setItem(16, main.getItem(Material.BLAZE_ROD, "§5OpenFront", true,1));
 
             player.openInventory(gameSelectorInv);
 

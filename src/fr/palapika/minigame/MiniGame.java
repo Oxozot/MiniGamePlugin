@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class MiniGame extends JavaPlugin {
@@ -44,6 +46,9 @@ public class MiniGame extends JavaPlugin {
     // tntGame
     public List<Player> territoryGamePlayers = new ArrayList<>();
     public List<Player> territoryGameDeadPlayers = new ArrayList<>();
+
+    public Map<Player, Material> territoryPlayerTeam = new HashMap<>();
+
     private int defaultTroops = 2500;
     private int defaultAttaquePourcent = 20;
     private int defaultGold = 0;
@@ -93,6 +98,7 @@ public class MiniGame extends JavaPlugin {
         getCommand("circle").setExecutor(new CircleCmd(this));
         getCommand("broadcast").setExecutor(new BroadcastCMD(this));
         getCommand("territory").setExecutor(new TerritoryCMD(this));
+        getCommand("trail").setExecutor(new TrailCMD(this));
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents( new MiniGameListeners(this), this);
@@ -158,6 +164,8 @@ public class MiniGame extends JavaPlugin {
     public List<Player> getTerritoryGameDeadPlayers(){
         return territoryGameDeadPlayers;
     }
+
+
 
 
 
@@ -277,6 +285,8 @@ public class MiniGame extends JavaPlugin {
         troopsScore.setScore(2);
         Score attaqueP100Score = objective.getScore( ChatColor.AQUA + "Pourcentage d'attaque: " + attaquePourcent + "%");
         attaqueP100Score.setScore(1);
+
+
 
         player.setScoreboard(scoreboard);
     }

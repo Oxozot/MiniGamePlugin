@@ -25,3 +25,7 @@ commands:
   territory:
     description: Permet de ...
     usage: /command
+  trail:
+    description: Permet de ...
+    usage: /command
+    permission: minigame.trail

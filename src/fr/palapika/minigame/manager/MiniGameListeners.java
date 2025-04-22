@@ -16,12 +16,14 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.*;
 
 import java.util.Collections;
 
@@ -69,6 +71,16 @@ public class MiniGameListeners implements Listener {
         }
         main.getTerritoryGamePlayers().remove(player);
         main.getTerritoryGameDeadPlayers().remove(player);
+
+
+        main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".territory.x", null);
+        main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".territory.y", null);
+        main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".territory.z", null);
+        main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".attackPoint.x", null);
+        main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".attackPoint.y", null);
+        main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".attackPoint.z", null);
+        main.saveConfig();
+
     }
 
     @EventHandler
@@ -123,9 +135,30 @@ public class MiniGameListeners implements Listener {
                 int zBlock = event.getClickedBlock().getZ();
 
                 player.sendMessage("Territoire selectionne en: x= " + xBlock + " y= " + yBlock + " z= " + zBlock);
-                main.getConfig().set("player." + player.getUniqueId().toString() + ".territory.x", xBlock);
-                main.getConfig().set("player." + player.getUniqueId().toString() + ".territory.y", yBlock);
-                main.getConfig().set("player." + player.getUniqueId().toString() + ".territory.z", zBlock);
+                main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".territory.x", xBlock);
+                main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".territory.y", yBlock);
+                main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".territory.z", zBlock);
+
+
+                ItemMeta itemM = item.getItemMeta();
+                itemM.setLore(Collections.singletonList("x: " + xBlock + " y: " + yBlock + " z:" + zBlock));
+                item.setItemMeta(itemM);
+
+                player.getInventory().setItem(player.getInventory().getHeldItemSlot(), item);
+
+                main.saveConfig();
+            }
+            if (item.getItemMeta().getDisplayName().equals("§5Attack Stick") && item.getType() == Material.STICK){
+
+                int xBlock = event.getClickedBlock().getX();
+                int yBlock = event.getClickedBlock().getY();
+                int zBlock = event.getClickedBlock().getZ();
+
+                player.sendMessage("Territoire selectionne en: x= " + xBlock + " y= " + yBlock + " z= " + zBlock);
+                main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".attackPoint.x", xBlock);
+                main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".attackPoint.y", yBlock);
+                main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".attackPoint.z", zBlock);
+                main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".attackPoint.team", event.getClickedBlock().getType());
 
                 ItemMeta itemM = item.getItemMeta();
                 itemM.setLore(Collections.singletonList("x: " + xBlock + " y: " + yBlock + " z:" + zBlock));
@@ -179,6 +212,44 @@ public class MiniGameListeners implements Listener {
         Inventory inv = event.getInventory();
         Player player = (Player) event.getWhoClicked();
         ItemStack current = event.getCurrentItem();
+
+        if (event.getView().getTitle().equals("§dTrail Selector")) {
+            if (current == null) return;
+            if (current.getType() == Material.RED_STAINED_GLASS_PANE && current.getItemMeta().getDisplayName().equals(" ")) {
+                event.setCancelled(true);
+            }
+            if (current.getType() == Material.LIGHT_BLUE_WOOL && current.getItemMeta().getDisplayName().equals("§3Blue")) {
+                main.getConfig().set("trail.player." + player.getUniqueId().toString(), Color.BLUE);
+                main.saveConfig();
+                event.setCancelled(true);
+                player.closeInventory();
+            }
+            if (current.getType() == Material.RED_WOOL && current.getItemMeta().getDisplayName().equals("§4Red")) {
+                main.getConfig().set("trail.player." + player.getUniqueId().toString(), Color.RED);
+                main.saveConfig();
+                event.setCancelled(true);
+                player.closeInventory();
+            }
+            if (current.getType() == Material.GREEN_WOOL && current.getItemMeta().getDisplayName().equals("§2Green")) {
+                main.getConfig().set("trail.player." + player.getUniqueId().toString(), Color.GREEN);
+                main.saveConfig();
+                event.setCancelled(true);
+                player.closeInventory();
+            }
+            if (current.getType() == Material.PURPLE_WOOL && current.getItemMeta().getDisplayName().equals("§dPurple")) {
+                main.getConfig().set("trail.player." + player.getUniqueId().toString(), Color.PURPLE);
+                main.saveConfig();
+                event.setCancelled(true);
+                player.closeInventory();
+            }
+            if (current.getType() == Material.BARRIER && current.getItemMeta().getDisplayName().equals("§4OFF")) {
+                main.getConfig().set("trail.player." + player.getUniqueId().toString(), null);
+                main.saveConfig();
+                event.setCancelled(true);
+                player.closeInventory();
+            }
+        }
+
 
         if (event.getView().getTitle().equals("§dGameSelector")){
             if (current == null)return;
@@ -245,6 +316,10 @@ public class MiniGameListeners implements Listener {
                     player.getInventory().clear();
                     player.closeInventory();
                     player.teleport(main.spawnTerritoryGameLoc);
+                    ItemStack territorySelector = main.getItem(Material.BLAZE_ROD, "§5Territory Selector", true, 1);
+                    player.getInventory().addItem(territorySelector);
+                    main.getConfig().set("territoryGame.player." + player.getUniqueId().toString() + ".territory.y", 0);
+                    main.saveConfig();
                 } else player.sendMessage(ChatColor.RED + "Le jeu est plein!");
             }
         }
@@ -256,6 +331,17 @@ public class MiniGameListeners implements Listener {
         if (event.getLine(1).equalsIgnoreCase("[FORCE START]")){
             event.setLine(1, ChatColor.DARK_BLUE + "FORCE START");
         }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event){
+        Player player = event.getPlayer();
+
+        if (main.getConfig().contains("trail.player." + player.getUniqueId().toString())){
+            Particle.DustOptions dustOptions = new Particle.DustOptions(main.getConfig().getColor("trail.player." + player.getUniqueId().toString()), 4.0F);
+            player.spawnParticle(Particle.REDSTONE, player.getLocation().add(0, 0.5f, 0), 15, dustOptions);
+        }
+
     }
 
 }
