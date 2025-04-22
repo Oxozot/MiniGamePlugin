@@ -30,11 +30,11 @@ import java.util.logging.Level;
 public class MiniGame extends JavaPlugin {
 
 
-    public World world = Bukkit.getWorld("world");
+    public World world;
 
-    public Location spawnTntGameLoc = new Location(world, 4, 206, 4);
-    public Location spawnColorGameLoc = new Location(world, 4, 210, 4);
-    public Location spawnTerritoryGameLoc = new Location(world, 4, 214, 4);
+    public Location spawnTntGameLoc;
+    public Location spawnColorGameLoc;
+    public Location spawnTerritoryGameLoc;
 
 // tntGame
     public List<Player> players = new ArrayList<>();
@@ -70,11 +70,16 @@ public class MiniGame extends JavaPlugin {
 
     @Override
     public void onEnable(){
+        this.world = Bukkit.getWorld("world");
+
+        this.spawnTntGameLoc = new Location(world, 4, 206, 4);
+        this.spawnColorGameLoc = new Location(world, 4, 210, 4);
+        this.spawnTerritoryGameLoc = new Location(world, 4, 214, 4);
+
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "le serv va bien");
         setState(GameStates.WAITING);
         setColorGameState(GameStatesColorGame.WAITING);
         setTerritoryGameState(GameStatesTerritoryGame.WAITING);
-
         saveDefaultConfig();
 
 
@@ -178,12 +183,9 @@ public class MiniGame extends JavaPlugin {
         if (enchantEffect){
             itemM.addEnchant(Enchantment.IMPALING, 1, true);
             itemM.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            item.setItemMeta(itemM);
-            return item;
-        }else {
-            item.setItemMeta(itemM);
-            return item;
         }
+        item.setItemMeta(itemM);
+        return item;
     }
 
 
